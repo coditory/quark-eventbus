@@ -28,7 +28,7 @@ final class DispatchingEventBus implements EventBus {
     }
 
     @Override
-    public void emit(Object event) {
+    public void emit(@NotNull Object event) {
         requireNonNull(event);
         Set<Subscription<Object>> subscriptions = getSubscriptionsForEvent(event.getClass());
         if (subscriptions.isEmpty()) {
@@ -65,14 +65,14 @@ final class DispatchingEventBus implements EventBus {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void addSubscription(Subscription<?> subscription) {
+    public void subscribe(@NotNull Subscription<?> subscription) {
         requireNonNull(subscription);
         routes.computeIfAbsent(subscription.getEventType(), (x) -> new CopyOnWriteArraySet<>())
                 .add((Subscription<Object>) subscription);
     }
 
     @Override
-    public void removeSubscription(Subscription<?> listener) {
+    public void unsubscribe(@NotNull Subscription<?> listener) {
         requireNonNull(listener);
         getEventHierarchy(listener.getEventType())
                 .forEach(clazz -> this.unregisterRoute(clazz, listener));

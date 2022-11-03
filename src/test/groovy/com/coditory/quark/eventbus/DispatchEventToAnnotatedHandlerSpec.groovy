@@ -9,14 +9,14 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     DispatchExceptionHandler exceptionHandler = new InMemEventExceptionHandler()
 
     EventBus eventBus = new EventBusBuilder()
-            .addUnhandledEventListener(unhandledEventListener)
+            .subscribe(unhandledEventListener)
             .setExceptionHandler(exceptionHandler)
             .build()
 
     def "should dispatch event to annotated handler"() {
         given:
             A handler = new A()
-            eventBus.addEventHandler(handler)
+            eventBus.subscribe(handler)
         when:
             eventBus.emit("hello")
         then:
@@ -29,7 +29,7 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     def "should dispatch event to two annotated handlers"() {
         given:
             B handler = new B()
-            eventBus.addEventHandler(handler)
+            eventBus.subscribe(handler)
         when:
             eventBus.emit("hello")
         then:
@@ -42,7 +42,7 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     def "should dispatch event to overridden and inherited handle methods"() {
         given:
             C1 handler = new C1()
-            eventBus.addEventHandler(handler)
+            eventBus.subscribe(handler)
         when:
             eventBus.emit("hello")
         then:
@@ -55,7 +55,7 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     def "should dispatch event to method annotated on an interface"() {
         given:
             D1 handler = new D1()
-            eventBus.addEventHandler(handler)
+            eventBus.subscribe(handler)
         when:
             eventBus.emit("hello")
         then:
@@ -66,19 +66,19 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     }
 
     class A extends InMemHandler {
-        @EventHandler
+        @Subscribe
         void handle(String event) {
             receive("A.handle(String $event)")
         }
     }
 
     class B extends InMemHandler {
-        @EventHandler
+        @Subscribe
         void handle(String event) {
             receive("B.handle(String $event)")
         }
 
-        @EventHandler
+        @Subscribe
         void handle(Object event) {
             receive("B.handle(Object $event)")
         }
@@ -91,12 +91,12 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     }
 
     class C2 extends InMemHandler {
-        @EventHandler
+        @Subscribe
         void handle(String event) {
             receive("C2.handle(String $event)")
         }
 
-        @EventHandler
+        @Subscribe
         void handle(Object event) {
             receive("C2.handle(Object $event)")
         }
@@ -113,7 +113,7 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     }
 
     interface D2 {
-        @EventHandler
+        @Subscribe
         void handle(String event)
     }
 

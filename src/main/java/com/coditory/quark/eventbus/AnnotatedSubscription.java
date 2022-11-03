@@ -8,13 +8,13 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public final class EventHandlerSubscription<T> implements Subscription<T> {
+public final class AnnotatedSubscription<T> implements Subscription<T> {
     private final Object instance;
     private final Method method;
     private final Class<T> eventType;
     private boolean accessible = false;
 
-    EventHandlerSubscription(@NotNull Object instance, @NotNull Method method, @NotNull Class<T> eventType) {
+    AnnotatedSubscription(@NotNull Object instance, @NotNull Method method, @NotNull Class<T> eventType) {
         this.instance = requireNonNull(instance);
         this.method = requireNonNull(method);
         this.eventType = requireNonNull(eventType);
@@ -43,7 +43,7 @@ public final class EventHandlerSubscription<T> implements Subscription<T> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EventHandlerSubscription<?> that = (EventHandlerSubscription<?>) o;
+        AnnotatedSubscription<?> that = (AnnotatedSubscription<?>) o;
         return Objects.equals(instance, that.instance)
                 && Objects.equals(method, that.method)
                 && Objects.equals(eventType, that.eventType);
@@ -56,7 +56,7 @@ public final class EventHandlerSubscription<T> implements Subscription<T> {
 
     @Override
     public String toString() {
-        return "EventHandlerSubscription{" +
+        return "AnnotatedSubscription{" +
                 "instance=" + instance +
                 ", method=" + method +
                 ", eventType=" + eventType +

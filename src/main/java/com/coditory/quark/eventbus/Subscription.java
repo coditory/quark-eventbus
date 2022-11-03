@@ -10,24 +10,24 @@ import static com.coditory.quark.eventbus.Reflections.getAnnotatedMethods;
 import static java.util.Collections.unmodifiableList;
 
 public sealed interface Subscription<T> extends EventListener<T>
-        permits EventHandlerSubscription, EventListenerSubscription {
-    static <T> Subscription<T> fromEventListener(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
+        permits AnnotatedSubscription, EventListenerSubscription {
+    static <T> Subscription<T> of(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
         return new EventListenerSubscription<>(eventType, listener);
     }
 
-    static List<Subscription<?>> fromEventHandlerMethods(@NotNull Object listener) {
+    static List<Subscription<?>> of(@NotNull Object listener) {
         List<Subscription<?>> listeners = new ArrayList<>();
-        for (Method method : getAnnotatedMethods(listener.getClass(), EventHandler.class)) {
+        for (Method method : getAnnotatedMethods(listener.getClass(), Subscribe.class)) {
             Class<?>[] parameterTypes = method.getParameterTypes();
             if (parameterTypes.length != 1 || parameterTypes[0].isPrimitive()) {
-                throw new IllegalArgumentException("Expected single non-primitive parameter on @EventHandler method: " + method.getName());
+                throw new IllegalArgumentException("Expected single non-primitive parameter on @Subscribe method: " + method.getName());
             }
             Class<?> eventType = parameterTypes[0];
-            Subscription<?> subscription = new EventHandlerSubscription<>(listener, method, eventType);
+            Subscription<?> subscription = new AnnotatedSubscription<>(listener, method, eventType);
             listeners.add(subscription);
         }
         if (listeners.isEmpty()) {
-            throw new IllegalArgumentException("Expected at least one method annotated with @EventHandler");
+            throw new IllegalArgumentException("Expected at least one method annotated with @Subscribe");
         }
         return unmodifiableList(listeners);
     }

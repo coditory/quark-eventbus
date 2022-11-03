@@ -1,6 +1,5 @@
 package com.coditory.quark.eventbus
 
-
 import com.coditory.quark.eventbus.base.InMemEventListener
 import com.coditory.quark.eventbus.base.InMemEventExceptionHandler
 import com.coditory.quark.eventbus.base.InMemUnhandledEventListener
@@ -13,9 +12,9 @@ class DispatchEventSpec extends Specification {
     DispatchExceptionHandler exceptionHandler = new InMemEventExceptionHandler()
 
     EventBus eventBus = new EventBusBuilder()
-            .addEventListener(String, stringListener)
-            .addEventListener(Integer, integerListener)
-            .addUnhandledEventListener(unhandledEventListener)
+            .subscribe(String, stringListener)
+            .subscribe(Integer, integerListener)
+            .subscribe(unhandledEventListener)
             .setExceptionHandler(exceptionHandler)
             .build()
 
@@ -32,8 +31,8 @@ class DispatchEventSpec extends Specification {
 
     def "should not register the same listener multiple times"() {
         given:
-            eventBus.addEventListener(String, stringListener)
-            eventBus.addEventListener(String, stringListener)
+            eventBus.subscribe(String, stringListener)
+            eventBus.subscribe(String, stringListener)
         when:
             eventBus.emit("Hello")
         then:
@@ -46,7 +45,7 @@ class DispatchEventSpec extends Specification {
 
     def "should unregister one of two event listeners"() {
         given:
-            eventBus.removeEventListener(String, stringListener)
+            eventBus.unsubscribe(String, stringListener)
         when:
             eventBus.emit("Hello")
         then:
@@ -60,9 +59,9 @@ class DispatchEventSpec extends Specification {
     def "should unregister one of two event listeners"() {
         given:
             EventListener<String> otherListener = new InMemEventListener<>()
-            eventBus.addEventListener(String, otherListener)
+            eventBus.subscribe(String, otherListener)
         and:
-            eventBus.removeEventListener(String, stringListener)
+            eventBus.unsubscribe(String, stringListener)
         when:
             eventBus.emit("Hello")
         then:
@@ -77,7 +76,7 @@ class DispatchEventSpec extends Specification {
     def "should dispatch single event to multiple listeners"() {
         given:
             EventListener<String> otherListener = new InMemEventListener<>()
-            eventBus.addEventListener(String, otherListener)
+            eventBus.subscribe(String, otherListener)
         when:
             eventBus.emit("Hello")
         then:

@@ -1,6 +1,5 @@
 package com.coditory.quark.eventbus
 
-
 import com.coditory.quark.eventbus.base.InMemEventListener
 import com.coditory.quark.eventbus.base.InMemEventExceptionHandler
 import com.coditory.quark.eventbus.base.InMemUnhandledEventListener
@@ -16,9 +15,9 @@ class HandleDispatchExceptionSpec extends Specification {
         given:
             EventListener<String> listener = { throw exception }
             EventBus eventBus = new EventBusBuilder()
-                    .addEventListener(String, stringListener)
-                    .addEventListener(String, listener)
-                    .addUnhandledEventListener(unhandledEventListener)
+                    .subscribe(String, stringListener)
+                    .subscribe(String, listener)
+                    .subscribe(unhandledEventListener)
                     .setExceptionHandler(exceptionHandler)
                     .build()
         when:
@@ -27,7 +26,7 @@ class HandleDispatchExceptionSpec extends Specification {
             exceptionHandler.getContexts() == [new DispatchExceptionContext(
                     exception,
                     "Hello",
-                    Subscription.fromEventListener(String, listener)
+                    Subscription.of(String, listener)
             )]
         and:
             stringListener.getEvents() == ["Hello"]
@@ -39,7 +38,7 @@ class HandleDispatchExceptionSpec extends Specification {
             EventListener<UnhandledEvent> unhandledEventListener = { throw exception }
             DispatchExceptionHandler exceptionHandler = new InMemEventExceptionHandler()
             EventBus eventBus = new EventBusBuilder()
-                    .addUnhandledEventListener(unhandledEventListener)
+                    .subscribe(unhandledEventListener)
                     .setExceptionHandler(exceptionHandler)
                     .build()
         when:
@@ -48,7 +47,7 @@ class HandleDispatchExceptionSpec extends Specification {
             exceptionHandler.getContexts() == [new DispatchExceptionContext(
                     exception,
                     new UnhandledEvent("Hello"),
-                    Subscription.fromEventListener(UnhandledEvent, unhandledEventListener)
+                    Subscription.of(UnhandledEvent, unhandledEventListener)
             )]
     }
 
@@ -56,8 +55,8 @@ class HandleDispatchExceptionSpec extends Specification {
         given:
             DispatchExceptionHandler exceptionHandler = { throw exception }
             EventBus eventBus = new EventBusBuilder()
-                    .addEventListener(String, { throw new RuntimeException("Thrown by event listener") })
-                    .addUnhandledEventListener(unhandledEventListener)
+                    .subscribe(String, { throw new RuntimeException("Thrown by event listener") })
+                    .subscribe(unhandledEventListener)
                     .setExceptionHandler(exceptionHandler)
                     .build()
         when:

@@ -3,35 +3,35 @@ package com.coditory.quark.eventbus;
 import org.jetbrains.annotations.NotNull;
 
 public interface EventBus extends EventEmitter {
+    static EventBus create() {
+        return new EventBusBuilder().build();
+    }
+
+    static EventBusBuilder builder() {
+        return new EventBusBuilder();
+    }
+
     String getName();
 
-    void addSubscription(@NotNull Subscription<?> listener);
+    void subscribe(@NotNull Subscription<?> listener);
 
-    void removeSubscription(@NotNull Subscription<?> listener);
+    void unsubscribe(@NotNull Subscription<?> listener);
 
-    default <T> void addEventListener(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
-        addSubscription(Subscription.fromEventListener(eventType, listener));
+    default <T> void subscribe(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
+        subscribe(Subscription.of(eventType, listener));
     }
 
-    default void addEventHandler(@NotNull Object listener) {
-        Subscription.fromEventHandlerMethods(listener)
-                .forEach(this::addSubscription);
+    default void subscribe(@NotNull Object listener) {
+        Subscription.of(listener)
+                .forEach(this::subscribe);
     }
 
-    default <T> void removeEventListener(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
-        removeSubscription(Subscription.fromEventListener(eventType, listener));
+    default <T> void unsubscribe(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
+        unsubscribe(Subscription.of(eventType, listener));
     }
 
-    default void removeEventHandler(@NotNull Object listener) {
-        Subscription.fromEventHandlerMethods(listener)
-                .forEach(this::removeSubscription);
-    }
-
-    default void addUnhandledEventListener(@NotNull EventListener<UnhandledEvent> listener) {
-        addEventListener(UnhandledEvent.class, listener);
-    }
-
-    default void removeUnhandledEventListener(@NotNull EventListener<UnhandledEvent> listener) {
-        removeEventListener(UnhandledEvent.class, listener);
+    default void unsubscribe(@NotNull Object listener) {
+        Subscription.of(listener)
+                .forEach(this::unsubscribe);
     }
 }

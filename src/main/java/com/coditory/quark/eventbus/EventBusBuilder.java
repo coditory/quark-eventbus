@@ -6,37 +6,43 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
 
 public final class EventBusBuilder {
+    private final AtomicInteger DEFAULT_NAME_COUNTER = new AtomicInteger(1);
     private final DispatchExceptionHandler DEFAULT_EXCEPTION_HANDLER = new LoggingExceptionHandler();
     private final List<Subscription<?>> subscriptions = new ArrayList<>();
-    private String name = "EventBus";
+    private String name;
     private DispatchExceptionHandler exceptionHandler = DEFAULT_EXCEPTION_HANDLER;
 
-    public EventBusBuilder addEventHandler(@NotNull Object listener) {
+    EventBusBuilder() {
+        // package scope constructor
+    }
+
+    public EventBusBuilder subscribe(@NotNull Object listener) {
         requireNonNull(listener);
-        subscriptions.addAll(Subscription.fromEventHandlerMethods(listener));
+        subscriptions.addAll(Subscription.of(listener));
         return this;
     }
 
-    public EventBusBuilder addSubscription(@NotNull Subscription<?> listener) {
+    public EventBusBuilder subscribe(@NotNull Subscription<?> listener) {
         requireNonNull(listener);
         subscriptions.add(listener);
         return this;
     }
 
-    public <T> EventBusBuilder addEventListener(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
+    public <T> EventBusBuilder subscribe(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
         requireNonNull(eventType);
         requireNonNull(listener);
-        subscriptions.add(Subscription.fromEventListener(eventType, listener));
+        subscriptions.add(Subscription.of(eventType, listener));
         return this;
     }
 
-    public EventBusBuilder addUnhandledEventListener(@NotNull EventListener<UnhandledEvent> listener) {
+    public EventBusBuilder subscribe(@NotNull EventListener<UnhandledEvent> listener) {
         requireNonNull(listener);
-        addEventListener(UnhandledEvent.class, listener);
+        subscribe(UnhandledEvent.class, listener);
         return this;
     }
 
@@ -51,11 +57,20 @@ public final class EventBusBuilder {
     }
 
     public EventBus build() {
-        DispatchingEventBus eventBus = new DispatchingEventBus(name, exceptionHandler);
+        DispatchingEventBus eventBus = new DispatchingEventBus(resolveName(), exceptionHandler);
         for (Subscription<?> subscription : subscriptions) {
-            eventBus.addSubscription(subscription);
+            eventBus.subscribe(subscription);
         }
         return eventBus;
+    }
+
+    private String resolveName() {
+        if (name != null) {
+            return name;
+        }
+        int counter = DEFAULT_NAME_COUNTER.incrementAndGet();
+        String defaultName = "EventBus";
+        return counter > 1 ? defaultName + "-" + counter : defaultName;
     }
 
     private static final class LoggingExceptionHandler implements DispatchExceptionHandler {

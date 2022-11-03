@@ -20,13 +20,13 @@ class DispatchHierarchicalEventSpec extends Specification {
     ]
 
     EventBus eventBus = new EventBusBuilder()
-            .addUnhandledEventListener(unhandledEventListener)
+            .subscribe(unhandledEventListener)
             .setExceptionHandler(exceptionHandler)
             .build()
 
     def setup() {
         listeners.each {
-            eventBus.addEventListener(it.key as Class<Object>, it.value as EventListener<Object>)
+            eventBus.subscribe(it.key as Class<Object>, it.value as EventListener<Object>)
         }
     }
 

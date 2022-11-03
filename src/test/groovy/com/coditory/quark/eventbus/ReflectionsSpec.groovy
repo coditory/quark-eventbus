@@ -1,6 +1,5 @@
 package com.coditory.quark.eventbus
 
-
 import spock.lang.Specification
 
 import static Reflections.getAllInterfacesAndClasses
