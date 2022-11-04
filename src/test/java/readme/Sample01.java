@@ -1,7 +1,6 @@
 package readme;
 
 import com.coditory.quark.eventbus.EventBus;
-import com.coditory.quark.eventbus.Subscribe;
 
 public class Sample01 {
     public static void main(String[] args) {

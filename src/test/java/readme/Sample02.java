@@ -1,7 +1,7 @@
 package readme;
 
 import com.coditory.quark.eventbus.EventBus;
-import com.coditory.quark.eventbus.Subscribe;
+import com.coditory.quark.eventbus.EventHandler;
 
 public class Sample02 {
     public static void main(String[] args) {
@@ -12,12 +12,12 @@ public class Sample02 {
     }
 
     static class TwoHandlers {
-        @Subscribe
+        @EventHandler
         void handle(String event) {
             System.out.println("String event: " + event);
         }
 
-        @Subscribe
+        @EventHandler
         void handle(Integer event) {
             System.out.println("Integer event: " + event);
         }

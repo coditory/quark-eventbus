@@ -66,19 +66,19 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     }
 
     class A extends InMemHandler {
-        @Subscribe
+        @EventHandler
         void handle(String event) {
             receive("A.handle(String $event)")
         }
     }
 
     class B extends InMemHandler {
-        @Subscribe
+        @EventHandler
         void handle(String event) {
             receive("B.handle(String $event)")
         }
 
-        @Subscribe
+        @EventHandler
         void handle(Object event) {
             receive("B.handle(Object $event)")
         }
@@ -91,12 +91,12 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     }
 
     class C2 extends InMemHandler {
-        @Subscribe
+        @EventHandler
         void handle(String event) {
             receive("C2.handle(String $event)")
         }
 
-        @Subscribe
+        @EventHandler
         void handle(Object event) {
             receive("C2.handle(Object $event)")
         }
@@ -113,7 +113,7 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     }
 
     interface D2 {
-        @Subscribe
+        @EventHandler
         void handle(String event)
     }
 

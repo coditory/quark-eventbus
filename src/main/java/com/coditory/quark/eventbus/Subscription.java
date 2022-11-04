@@ -17,7 +17,7 @@ public sealed interface Subscription<T> extends EventListener<T>
 
     static List<Subscription<?>> of(@NotNull Object listener) {
         List<Subscription<?>> listeners = new ArrayList<>();
-        for (Method method : getAnnotatedMethods(listener.getClass(), Subscribe.class)) {
+        for (Method method : getAnnotatedMethods(listener.getClass(), EventHandler.class)) {
             Class<?>[] parameterTypes = method.getParameterTypes();
             if (parameterTypes.length != 1 || parameterTypes[0].isPrimitive()) {
                 throw new IllegalArgumentException("Expected single non-primitive parameter on @Subscribe method: " + method.getName());
