@@ -7,15 +7,14 @@
 
 The idea was to create a small, single-jar library, similar to
 the EventBus provided by [Spring Framework](https://docs.spring.io/spring-framework/docs/5.3.9/javadoc-api/org/springframework/context/ApplicationEvent.html)
-or [Guava](https://github.com/google/guava/wiki/EventBusExplained)
-, that is:
+or [Guava](https://github.com/google/guava/wiki/EventBusExplained), that is:
 
 - lightweight, no dependencies
-- single purpose and is not part of a framework
+- single purpose, not part of a framework
 - provides both functional and annotation based API
 
 This EventBus is threadsafe and synchronous.
-It deliberately provides no concurrent api to keep it as simple as possible.
+It deliberately provides no asynchronous api to keep it super simple.
 
 ## Installation
 
