@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.coditory.quark.eventbus.Reflections.getAnnotatedMethods;
+import static com.coditory.quark.eventbus.Reflections.toShortString;
 import static java.util.Collections.unmodifiableList;
 
 public sealed interface Subscription<T> extends EventListener<T>
@@ -19,15 +20,21 @@ public sealed interface Subscription<T> extends EventListener<T>
         List<Subscription<?>> listeners = new ArrayList<>();
         for (Method method : getAnnotatedMethods(listener.getClass(), EventHandler.class)) {
             Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length != 1 || parameterTypes[0].isPrimitive()) {
-                throw new IllegalArgumentException("Expected single non-primitive parameter on @Subscribe method: " + method.getName());
+            if (parameterTypes.length != 1) {
+                throw new IllegalArgumentException("Expected single parameter on @EventHandler method: " + toShortString(method));
+            }
+            if (parameterTypes[0].isPrimitive()) {
+                throw new IllegalArgumentException("Expected single non-primitive parameter on @EventHandler method: " + toShortString(method));
+            }
+            if (!(method.getGenericParameterTypes()[0] instanceof Class<?>)) {
+                throw new IllegalArgumentException("Expected single non-generic parameter on @EventHandler method: " + toShortString(method));
             }
             Class<?> eventType = parameterTypes[0];
             Subscription<?> subscription = new AnnotatedSubscription<>(listener, method, eventType);
             listeners.add(subscription);
         }
         if (listeners.isEmpty()) {
-            throw new IllegalArgumentException("Expected at least one method annotated with @Subscribe");
+            throw new IllegalArgumentException("Expected at least one method annotated with @EventHandler");
         }
         return unmodifiableList(listeners);
     }

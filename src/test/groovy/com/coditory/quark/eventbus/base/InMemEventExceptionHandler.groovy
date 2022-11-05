@@ -15,6 +15,10 @@ class InMemEventExceptionHandler implements DispatchExceptionHandler {
         return List.copyOf(received)
     }
 
+    Throwable getLastException() {
+        return received.isEmpty() ? null : received.get(0).exception()
+    }
+
     boolean wasExecuted() {
         return !received.isEmpty()
     }

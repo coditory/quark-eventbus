@@ -57,7 +57,7 @@ final class DispatchingEventBus implements EventBus {
     private void dispatch(Object event, Subscription<Object> subscription) {
         try {
             subscription.handle(event);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             DispatchExceptionContext context = new DispatchExceptionContext(e, event, subscription);
             exceptionHandler.handle(context);
         }

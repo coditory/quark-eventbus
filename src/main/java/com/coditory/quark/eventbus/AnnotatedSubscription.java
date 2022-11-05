@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import static com.coditory.quark.eventbus.Reflections.toShortString;
 import static java.util.Objects.requireNonNull;
 
 public final class AnnotatedSubscription<T> implements Subscription<T> {
@@ -26,7 +27,7 @@ public final class AnnotatedSubscription<T> implements Subscription<T> {
     }
 
     @Override
-    public void handle(@NotNull T event) {
+    public void handle(@NotNull T event) throws Throwable {
         Object[] args = new Object[]{event};
         try {
             if (!accessible) {
@@ -34,8 +35,13 @@ public final class AnnotatedSubscription<T> implements Subscription<T> {
                 accessible = true;
             }
             method.invoke(instance, args);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Method became inaccessible: " + toShortString(method) + " Event: " + event, e);
+        } catch (InvocationTargetException e) {
+            if (e.getCause() != null) {
+                throw e.getCause();
+            }
+            throw e;
         }
     }
 

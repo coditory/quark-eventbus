@@ -29,25 +29,6 @@ dependencies {
 
 ## Usage
 
-### EventListener subscription
-
-```java
-public class Application {
-    public static void main(String[] args) {
-        EventBus eventBus = EventBus.create();
-        eventBus.subscribe(String.class, (event) -> System.out.println("String event: " + event));
-        eventBus.subscribe(Number.class, (event) -> System.out.println("Integer event: " + event));
-        eventBus.subscribe(Integer.class, (event) -> System.out.println("Integer event: " + event));
-        eventBus.emit("hello");
-        eventBus.emit(42);
-    }
-}
-// Output:
-// String event: hello
-// Integer event: 42
-// Number event: 42
-```
-
 ### EventHandler subscription
 
 ```java
@@ -74,4 +55,57 @@ public class Application {
 // Output:
 // String event: hello
 // Integer event: 42
+```
+
+### EventListener subscription
+
+```java
+public class Application {
+    public static void main(String[] args) {
+        EventBus eventBus = EventBus.create();
+        eventBus.subscribe(String.class, (event) -> System.out.println("String event: " + event));
+        eventBus.subscribe(Number.class, (event) -> System.out.println("Integer event: " + event));
+        eventBus.subscribe(Integer.class, (event) -> System.out.println("Integer event: " + event));
+        eventBus.emit("hello");
+        eventBus.emit(42);
+    }
+}
+// Output:
+// String event: hello
+// Integer event: 42
+// Number event: 42
+```
+
+### Exception handling
+
+```java
+public class Application {
+    public static void main(String[] args) {
+        EventBus eventBus = EventBus.builder()
+                .subscribe(String.class, (event) -> { throw new RuntimeException("xxx"); })
+                .subscribe(String.class, (event) -> System.out.println("String event: " + event))
+                .setExceptionHandler(ctx -> System.out.println("Exception: " + ctx.exception()))
+                .build();
+        eventBus.emit("hello");
+    }
+}
+// Output:
+// Exception: java.lang.RuntimeException: xxx
+// String event: hello
+```
+
+### Handling unhandled events
+
+```java
+public class Application {
+    public static void main(String[] args) {
+        EventBus eventBus = EventBus.builder()
+                .subscribe(String.class, (event) -> System.out.println("String event: " + event))
+                .subscribe(UnhandledEvent.class, (unhandled) -> System.out.println("Unhandled event: " + unhandled.event()))
+                .build();
+        eventBus.emit(42);
+    }
+}
+// Output:
+// Unhandled event: 42
 ```

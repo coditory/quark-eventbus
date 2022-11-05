@@ -14,7 +14,7 @@ class DispatchEventSpec extends Specification {
     EventBus eventBus = new EventBusBuilder()
             .subscribe(String, stringListener)
             .subscribe(Integer, integerListener)
-            .subscribe(unhandledEventListener)
+            .subscribe(UnhandledEvent, unhandledEventListener)
             .setExceptionHandler(exceptionHandler)
             .build()
 

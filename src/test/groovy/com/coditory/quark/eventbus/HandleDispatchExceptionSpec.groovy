@@ -1,7 +1,7 @@
 package com.coditory.quark.eventbus
 
-import com.coditory.quark.eventbus.base.InMemEventListener
 import com.coditory.quark.eventbus.base.InMemEventExceptionHandler
+import com.coditory.quark.eventbus.base.InMemEventListener
 import com.coditory.quark.eventbus.base.InMemUnhandledEventListener
 import spock.lang.Specification
 
@@ -17,7 +17,7 @@ class HandleDispatchExceptionSpec extends Specification {
             EventBus eventBus = new EventBusBuilder()
                     .subscribe(String, stringListener)
                     .subscribe(String, listener)
-                    .subscribe(unhandledEventListener)
+                    .subscribe(UnhandledEvent, unhandledEventListener)
                     .setExceptionHandler(exceptionHandler)
                     .build()
         when:
@@ -33,12 +33,12 @@ class HandleDispatchExceptionSpec extends Specification {
             unhandledEventListener.wasNotExecuted()
     }
 
-    def "should pass exception thrown by deadEventListener to exceptionListener"() {
+    def "should pass exception thrown by unhandledEventListener to exceptionListener"() {
         given:
             EventListener<UnhandledEvent> unhandledEventListener = { throw exception }
             DispatchExceptionHandler exceptionHandler = new InMemEventExceptionHandler()
             EventBus eventBus = new EventBusBuilder()
-                    .subscribe(unhandledEventListener)
+                    .subscribe(UnhandledEvent, unhandledEventListener)
                     .setExceptionHandler(exceptionHandler)
                     .build()
         when:
@@ -56,7 +56,7 @@ class HandleDispatchExceptionSpec extends Specification {
             DispatchExceptionHandler exceptionHandler = { throw exception }
             EventBus eventBus = new EventBusBuilder()
                     .subscribe(String, { throw new RuntimeException("Thrown by event listener") })
-                    .subscribe(unhandledEventListener)
+                    .subscribe(UnhandledEvent, unhandledEventListener)
                     .setExceptionHandler(exceptionHandler)
                     .build()
         when:

@@ -9,7 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.stream.Collectors.joining;
+
 final class Reflections {
+    static String toShortString(Method method) {
+        String params = Arrays.stream(method.getGenericParameterTypes())
+                .map(t -> t instanceof Class<?> ? ((Class<?>) t).getSimpleName() : t.getTypeName())
+                .collect(joining(", "));
+        return method.getDeclaringClass().getSimpleName() +
+                '.' +
+                method.getName() +
+                '(' +
+                params +
+                ')';
+    }
+
     static List<Method> getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotationType) {
         Map<MethodIdentifier, Method> identifiers = new LinkedHashMap<>();
         List<Class<?>> types = getAllInterfacesAndClasses(clazz);

@@ -21,7 +21,7 @@ public final class EventListenerSubscription<T> implements Subscription<T> {
     }
 
     @Override
-    public void handle(@NotNull T event) {
+    public void handle(@NotNull T event) throws Throwable {
         listener.handle(event);
     }
 

@@ -40,12 +40,6 @@ public final class EventBusBuilder {
         return this;
     }
 
-    public EventBusBuilder subscribe(@NotNull EventListener<UnhandledEvent> listener) {
-        requireNonNull(listener);
-        subscribe(UnhandledEvent.class, listener);
-        return this;
-    }
-
     public EventBusBuilder setName(@NotNull String name) {
         this.name = requireNonNull(name);
         return this;

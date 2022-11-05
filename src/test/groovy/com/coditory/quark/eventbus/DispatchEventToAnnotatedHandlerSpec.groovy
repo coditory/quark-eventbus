@@ -9,7 +9,7 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
     DispatchExceptionHandler exceptionHandler = new InMemEventExceptionHandler()
 
     EventBus eventBus = new EventBusBuilder()
-            .subscribe(unhandledEventListener)
+            .subscribe(UnhandledEvent, unhandledEventListener)
             .setExceptionHandler(exceptionHandler)
             .build()
 
@@ -63,6 +63,43 @@ class DispatchEventToAnnotatedHandlerSpec extends Specification {
         and:
             unhandledEventListener.wasNotExecuted()
             exceptionHandler.wasNotExecuted()
+    }
+
+    def "should propagate unwrapped runtime exception to exception handler"() {
+        given:
+            RuntimeException exception = new RuntimeException("Simulated exception")
+            eventBus.subscribe(new ThrowingHandler(exception))
+        when:
+            eventBus.emit("hello")
+        then:
+            exceptionHandler.getLastException() == exception
+        and:
+            unhandledEventListener.wasNotExecuted()
+    }
+
+    def "should propagate unwrapped checked exception to exception handler"() {
+        given:
+            Exception exception = new Exception("Simulated exception")
+            eventBus.subscribe(new ThrowingHandler(exception))
+        when:
+            eventBus.emit("hello")
+        then:
+            exceptionHandler.getLastException() == exception
+        and:
+            unhandledEventListener.wasNotExecuted()
+    }
+
+    class ThrowingHandler {
+        private final Throwable exception
+
+        ThrowingHandler(Throwable exception) {
+            this.exception = exception
+        }
+
+        @EventHandler
+        void handle(String event) throws Exception {
+            throw exception
+        }
     }
 
     class A extends InMemHandler {

@@ -5,12 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import static java.util.Objects.requireNonNull;
 
 public record DispatchExceptionContext(
-        @NotNull RuntimeException exception,
+        @NotNull Throwable exception,
         @NotNull Object event,
         @NotNull Subscription<?> subscription
 ) {
     public DispatchExceptionContext(
-            RuntimeException exception,
+            Throwable exception,
             Object event,
             Subscription<?> subscription
     ) {

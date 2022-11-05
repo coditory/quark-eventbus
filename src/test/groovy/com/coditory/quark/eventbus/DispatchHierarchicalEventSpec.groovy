@@ -1,8 +1,7 @@
 package com.coditory.quark.eventbus
 
-
-import com.coditory.quark.eventbus.base.InMemEventListener
 import com.coditory.quark.eventbus.base.InMemEventExceptionHandler
+import com.coditory.quark.eventbus.base.InMemEventListener
 import com.coditory.quark.eventbus.base.InMemUnhandledEventListener
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -20,7 +19,7 @@ class DispatchHierarchicalEventSpec extends Specification {
     ]
 
     EventBus eventBus = new EventBusBuilder()
-            .subscribe(unhandledEventListener)
+            .subscribe(UnhandledEvent, unhandledEventListener)
             .setExceptionHandler(exceptionHandler)
             .build()
 
