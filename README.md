@@ -3,18 +3,14 @@
 [![Coverage Status](https://coveralls.io/repos/github/coditory/quark-eventbus/badge.svg)](https://coveralls.io/github/coditory/quark-eventbus)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coditory.quark/quark-eventbus/badge.svg)](https://mvnrepository.com/artifact/com.coditory.quark/quark-eventbus)
 
-> Quark EventBus is a simple, single purpose java library for dispatching events
-
-The idea was to create a small, single-jar library, similar to
-the EventBus provided by [Spring Framework](https://docs.spring.io/spring-framework/docs/5.3.9/javadoc-api/org/springframework/context/ApplicationEvent.html)
-or [Guava](https://github.com/google/guava/wiki/EventBusExplained), that is:
+> Super simple, lightweight, single purpose, in-memory EventBus java library. Similar to eventBuses provided by [Spring Framework](https://docs.spring.io/spring-framework/docs/5.3.9/javadoc-api/org/springframework/context/ApplicationEvent.html)
+or [Guava](https://github.com/google/guava/wiki/EventBusExplained) but without the unrelated parts.
 
 - lightweight, no dependencies
 - single purpose, not part of a framework
 - provides both functional and annotation based API
 
-This EventBus is threadsafe and synchronous.
-It deliberately provides no asynchronous api to keep it super simple.
+This EventBus is threadsafe and synchronous. It deliberately provides no asynchronous api to keep it super simple.
 
 ## Installation
 
