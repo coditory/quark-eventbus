@@ -20,7 +20,7 @@ Add to your `build.gradle`:
 
 ```gradle
 dependencies {
-    implementation "com.coditory.quark:quark-eventbus:0.0.4"
+    implementation "com.coditory.quark:quark-eventbus:0.0.5"
 }
 ```
 
