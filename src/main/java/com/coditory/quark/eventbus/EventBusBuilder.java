@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.Objects.requireNonNull;
+import static com.coditory.quark.eventbus.Preconditions.expectNonBlank;
+import static com.coditory.quark.eventbus.Preconditions.expectNonNull;
 
 public final class EventBusBuilder {
     private final AtomicInteger DEFAULT_NAME_COUNTER = new AtomicInteger(1);
@@ -21,35 +22,41 @@ public final class EventBusBuilder {
         // package scope constructor
     }
 
+    @NotNull
     public EventBusBuilder subscribe(@NotNull Object listener) {
-        requireNonNull(listener);
+        expectNonNull(listener, "listener");
         subscriptions.addAll(Subscription.of(listener));
         return this;
     }
 
+    @NotNull
     public EventBusBuilder subscribe(@NotNull Subscription<?> listener) {
-        requireNonNull(listener);
+        expectNonNull(listener, "listener");
         subscriptions.add(listener);
         return this;
     }
 
+    @NotNull
     public <T> EventBusBuilder subscribe(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
-        requireNonNull(eventType);
-        requireNonNull(listener);
+        expectNonNull(eventType, "eventType");
+        expectNonNull(listener, "listener");
         subscriptions.add(Subscription.of(eventType, listener));
         return this;
     }
 
+    @NotNull
     public EventBusBuilder setName(@NotNull String name) {
-        this.name = requireNonNull(name);
+        this.name = expectNonBlank(name, "name");
         return this;
     }
 
+    @NotNull
     public EventBusBuilder setExceptionHandler(@NotNull DispatchExceptionHandler exceptionHandler) {
-        this.exceptionHandler = requireNonNull(exceptionHandler);
+        this.exceptionHandler = expectNonNull(exceptionHandler, "exceptionHandler");
         return this;
     }
 
+    @NotNull
     public EventBus build() {
         DispatchingEventBus eventBus = new DispatchingEventBus(resolveName(), exceptionHandler);
         for (Subscription<?> subscription : subscriptions) {

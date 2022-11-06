@@ -3,14 +3,17 @@ package com.coditory.quark.eventbus;
 import org.jetbrains.annotations.NotNull;
 
 public interface EventBus extends EventEmitter {
+    @NotNull
     static EventBus create() {
         return new EventBusBuilder().build();
     }
 
+    @NotNull
     static EventBusBuilder builder() {
         return new EventBusBuilder();
     }
 
+    @NotNull
     String getName();
 
     void subscribe(@NotNull Subscription<?> listener);

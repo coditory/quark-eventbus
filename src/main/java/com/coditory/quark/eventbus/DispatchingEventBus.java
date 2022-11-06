@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static java.util.Objects.requireNonNull;
+import static com.coditory.quark.eventbus.Preconditions.expectNonBlank;
+import static com.coditory.quark.eventbus.Preconditions.expectNonNull;
 
 final class DispatchingEventBus implements EventBus {
     private final String name;
@@ -18,10 +19,11 @@ final class DispatchingEventBus implements EventBus {
     private final ConcurrentMap<Class<?>, Set<Subscription<Object>>> routes = new ConcurrentHashMap<>();
 
     DispatchingEventBus(@NotNull String name, @NotNull DispatchExceptionHandler exceptionHandler) {
-        this.name = requireNonNull(name);
-        this.exceptionHandler = requireNonNull(exceptionHandler);
+        this.name = expectNonBlank(name, "name");
+        this.exceptionHandler = expectNonNull(exceptionHandler, "exceptionHandler");
     }
 
+    @NotNull
     @Override
     public String getName() {
         return name;
@@ -29,7 +31,7 @@ final class DispatchingEventBus implements EventBus {
 
     @Override
     public void emit(@NotNull Object event) {
-        requireNonNull(event);
+        expectNonNull(event, "event");
         Set<Subscription<Object>> subscriptions = getSubscriptionsForEvent(event.getClass());
         if (subscriptions.isEmpty()) {
             emitUnhandledEvent(event);
@@ -66,19 +68,19 @@ final class DispatchingEventBus implements EventBus {
     @Override
     @SuppressWarnings("unchecked")
     public void subscribe(@NotNull Subscription<?> subscription) {
-        requireNonNull(subscription);
+        expectNonNull(subscription, "subscription");
         routes.computeIfAbsent(subscription.getEventType(), (x) -> new CopyOnWriteArraySet<>())
                 .add((Subscription<Object>) subscription);
     }
 
     @Override
-    public void unsubscribe(@NotNull Subscription<?> listener) {
-        requireNonNull(listener);
-        getEventHierarchy(listener.getEventType())
-                .forEach(clazz -> this.unregisterRoute(clazz, listener));
+    public void unsubscribe(@NotNull Subscription<?> subscription) {
+        expectNonNull(subscription, "subscription");
+        getEventHierarchy(subscription.getEventType())
+                .forEach(clazz -> this.unregisterRoute(clazz, subscription));
     }
 
-    public void unregisterRoute(Class<?> eventType, Subscription<?> subscription) {
+    private void unregisterRoute(Class<?> eventType, Subscription<?> subscription) {
         routes.computeIfAbsent(eventType, (x) -> new CopyOnWriteArraySet<>())
                 .remove(subscription);
     }

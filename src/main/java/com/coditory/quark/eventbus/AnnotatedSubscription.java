@@ -6,8 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import static com.coditory.quark.eventbus.Preconditions.expectNonNull;
 import static com.coditory.quark.eventbus.Reflections.toShortString;
-import static java.util.Objects.requireNonNull;
 
 public final class AnnotatedSubscription<T> implements Subscription<T> {
     private final Object instance;
@@ -16,11 +16,12 @@ public final class AnnotatedSubscription<T> implements Subscription<T> {
     private boolean accessible = false;
 
     AnnotatedSubscription(@NotNull Object instance, @NotNull Method method, @NotNull Class<T> eventType) {
-        this.instance = requireNonNull(instance);
-        this.method = requireNonNull(method);
-        this.eventType = requireNonNull(eventType);
+        this.instance = expectNonNull(instance, "instance");
+        this.method = expectNonNull(method, "method");
+        this.eventType = expectNonNull(eventType, "eventType");
     }
 
+    @NotNull
     @Override
     public Class<T> getEventType() {
         return eventType;
@@ -28,6 +29,7 @@ public final class AnnotatedSubscription<T> implements Subscription<T> {
 
     @Override
     public void handle(@NotNull T event) throws Throwable {
+        expectNonNull(event, "event");
         Object[] args = new Object[]{event};
         try {
             if (!accessible) {

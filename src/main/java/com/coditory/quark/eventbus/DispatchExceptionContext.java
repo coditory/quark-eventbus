@@ -2,7 +2,7 @@ package com.coditory.quark.eventbus;
 
 import org.jetbrains.annotations.NotNull;
 
-import static java.util.Objects.requireNonNull;
+import static com.coditory.quark.eventbus.Preconditions.expectNonNull;
 
 public record DispatchExceptionContext(
         @NotNull Throwable exception,
@@ -14,8 +14,8 @@ public record DispatchExceptionContext(
             Object event,
             Subscription<?> subscription
     ) {
-        this.exception = requireNonNull(exception);
-        this.event = requireNonNull(event);
-        this.subscription = requireNonNull(subscription);
+        this.exception = expectNonNull(exception, "exception");
+        this.event = expectNonNull(event, "event");
+        this.subscription = expectNonNull(subscription, "subscription");
     }
 }

@@ -39,5 +39,6 @@ public sealed interface Subscription<T> extends EventListener<T>
         return unmodifiableList(listeners);
     }
 
+    @NotNull
     Class<? extends T> getEventType();
 }

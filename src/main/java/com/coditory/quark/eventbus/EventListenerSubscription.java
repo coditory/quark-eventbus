@@ -4,17 +4,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
+import static com.coditory.quark.eventbus.Preconditions.expectNonNull;
 
 public final class EventListenerSubscription<T> implements Subscription<T> {
     private final Class<? extends T> eventType;
     private final EventListener<T> listener;
 
     EventListenerSubscription(@NotNull Class<? extends T> eventType, @NotNull EventListener<T> listener) {
-        this.eventType = requireNonNull(eventType);
-        this.listener = requireNonNull(listener);
+        this.eventType = expectNonNull(eventType, "eventType");
+        this.listener = expectNonNull(listener, "listener");
     }
 
+    @NotNull
     @Override
     public Class<? extends T> getEventType() {
         return eventType;
@@ -22,6 +23,7 @@ public final class EventListenerSubscription<T> implements Subscription<T> {
 
     @Override
     public void handle(@NotNull T event) throws Throwable {
+        expectNonNull(event, "event");
         listener.handle(event);
     }
 

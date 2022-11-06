@@ -9,6 +9,8 @@ or [Guava](https://github.com/google/guava/wiki/EventBusExplained) but without t
 - lightweight, no dependencies
 - single purpose, not part of a framework
 - provides both functional and annotation based API
+- public API annotated with `@NotNull` and `@Nullable` for better [kotlin integration](https://kotlinlang.org/docs/java-to-kotlin-nullability-guide.html#platform-types)
+- integrates with [event bus](https://github.com/coditory/quark-context)
 
 This EventBus is threadsafe and synchronous. It deliberately provides no asynchronous api to keep it super simple.
 
