@@ -23,16 +23,19 @@ java {
     }
 }
 
+group = "com.coditory.quark"
+description = "Coditory Quark event bus library"
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "com.coditory.quark"
+            groupId = project.group.toString()
             artifactId = project.name
             from(components["java"])
 
             pom {
                 name.set(project.name)
-                description.set("Coditory Quark - event bus library")
+                description.set(project.description)
                 url.set("https://github.com/coditory/quark-eventbus")
                 organization {
                     name.set("Coditory")
