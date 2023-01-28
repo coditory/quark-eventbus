@@ -1,6 +1,6 @@
 # Quark EventBus
 [![Build](https://github.com/coditory/quark-eventbus/actions/workflows/build.yml/badge.svg)](https://github.com/coditory/quark-eventbus/actions/workflows/build.yml)
-[![Coverage Status](https://coveralls.io/repos/github/coditory/quark-eventbus/badge.svg)](https://coveralls.io/github/coditory/quark-eventbus)
+[![Coverage](https://codecov.io/gh/coditory/quark-eventbus/branch/master/graph/badge.svg?token=DHH8U96FKV)](https://codecov.io/gh/coditory/quark-eventbus)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.coditory.quark/quark-eventbus/badge.svg)](https://mvnrepository.com/artifact/com.coditory.quark/quark-eventbus)
 
 > Super simple, lightweight, single purpose, in-memory EventBus java library. Similar to eventBuses provided by [Spring Framework](https://docs.spring.io/spring-framework/docs/5.3.9/javadoc-api/org/springframework/context/ApplicationEvent.html)
